@@ -1,0 +1,29 @@
+name: Deploy on Push to Main
+
+# Déclencheur pour les événements "push" sur la branche "main"
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1 : Vérification du code source
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Étape 2 : Configurer l'accès SSH
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan 3.89.252.255 >> ~/.ssh/known_hosts
+
+      # Étape 3 : Exécuter le pull sur le serveur
+      - name: Pull latest changes on the server
+        run: |
+          ssh -i ~/.ssh/id_rsa admin@3.89.252.255 "cd /path/to/your/project && git pull"
