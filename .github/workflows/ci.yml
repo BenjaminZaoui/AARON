@@ -23,7 +23,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan 3.89.252.255 >> ~/.ssh/known_hosts
 
-      # Étape 3 : Exécuter le pull sur Le serveur
+      # Étape 3 : Exécuter le pull sur Le serveurs
       - name: Pull latest changes on the server
         run: |
           ssh -i ~/.ssh/id_rsa admin@3.89.252.255 "cd /home/admin/AARON && git pull"
