@@ -28,5 +28,4 @@ jobs:
         run: |
           ssh raphyserver@3.89.252.255 <<EOF
             cd /home/raphyserver/www/AARON
-            git pull
           EOF
