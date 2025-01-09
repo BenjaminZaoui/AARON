@@ -31,7 +31,7 @@ jobs:
             git checkout main
             git pull
           EOF
-      # Étape 4 : Construire l'image Docker
+      # Étape 4 : Construire l'image Dockers
       - name: Build Docker image
         run: |
           ssh raphyserver@3.89.252.255 <<EOF
