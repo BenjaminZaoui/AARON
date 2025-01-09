@@ -26,4 +26,4 @@ jobs:
       # Étape 3 : Exécuter le pull sur le serveur
       - name: Pull latest changes on the server
         run: |
-          ssh -i ~/.ssh/id_rsa admin@3.89.252.255 "cd /home/admin/tp-html && git pull"
+          ssh -i ~/.ssh/id_rsa admin@3.89.252.255 "cd /home/admin/AARON && git pull"
