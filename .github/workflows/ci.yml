@@ -31,3 +31,13 @@ jobs:
             git checkout main
             git pull
           EOF
+      # Étape 3 : Construire l'image Docker
+      - name: Build Docker image
+        run: |
+          ssh raphyserver@3.89.252.255 <<EOF
+           docker build -t react-app:latest .
+           docker stop react-app || true
+           docker rm react-app || true
+           docker run -d --name react-app -p 80:80 react-app:latest
+          EOF
+          
