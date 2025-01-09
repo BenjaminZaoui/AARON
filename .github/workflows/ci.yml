@@ -35,6 +35,7 @@ jobs:
       - name: Build Docker image
         run: |
           ssh raphyserver@3.89.252.255 <<EOF
+           cd /home/raphyserver/www/AARON/client
            docker build -t react-app:latest .
            docker stop react-app || true
            docker rm react-app || true
