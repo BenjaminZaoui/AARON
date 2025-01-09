@@ -39,6 +39,6 @@ jobs:
            docker build -t react-app:latest .
            docker stop react-app || true
            docker rm react-app || true
-           docker run -d --name react-app -p 80:80 react-app:latest
+           docker run -d --name react-app -p 3000:3000 react-app:latest
           EOF
           
