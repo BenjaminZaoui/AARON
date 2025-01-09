@@ -37,8 +37,6 @@ jobs:
           ssh raphyserver@3.89.252.255 <<EOF
            cd /home/raphyserver/www/AARON/client
            docker build -t react-app:latest .
-           docker stop react-app || true
-           docker rm react-app || true
-           docker run -d --name react-app -p 5000:5000 react-app:latest
+           docker-compose up -d
           EOF
           
