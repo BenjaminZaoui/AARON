@@ -26,4 +26,4 @@ jobs:
       # Étape 3 : Exécuter le pull sur Le serveurs
       - name: Pull latest changes on the server
         run: |
-          ssh -i ~/.ssh/id_rsa raphyserver@3.89.252.255 "cd /home/raphyserver/www/AARON && git pull"
+          ssh raphyserver@3.89.252.255 "cd /home/raphyserver/www/AARON && git pull"
