@@ -1,6 +1,5 @@
 name: Deploy on Push to Main
 
-# Déclencheur pour les événements "push" sur la branche "main"
 on:
   push:
     branches:
@@ -16,12 +15,16 @@ jobs:
         uses: actions/checkout@v3
 
       # Étape 2 : Exécuter les tests
-
       - name: Run tests
         run: |
-         cd client/
-         npm install
-         npm test
+          cd client/
+          npm install
+          npm test
+
+      # Si un test échoue, arrêter le pipeline
+      - name: Check test results
+        if: failure()
+        run: exit 1
 
       # Étape 3 : Configurer l'accès SSH
       - name: Set up SSH
@@ -31,7 +34,15 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      # Étape 4 : Exécuter le pull sur Le serveurs
+      # Étape 4 : Sauvegarde de la base de données
+      - name: Backup MySQL Database
+        run: |
+          ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
+            mkdir -p ${{ secrets.WORK_DIR }}/client/backup
+            docker exec mon-mysql mysqldump -uuser -puserpassword mydatabase > ${{ secrets.WORK_DIR }}/backup/db_backup.sql
+          EOF
+
+      # Étape 5 : Exécuter le pull sur le serveur
       - name: Pull latest changes on the server
         run: |
           ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
@@ -39,13 +50,28 @@ jobs:
             git checkout main
             git pull
           EOF
-      # Étape 5 : Construire l'image Dockers
-      - name: Build Docker image
+
+      # Étape 6 : Suppression des anciens conteneurs et images Docker
+      - name: Clean up old Docker containers and images
         run: |
           ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
-           cd ${{ secrets.WORK_DIR }}/client
-           docker-compose -f docker-compose.yml
-           docker system prune -af
-           docker image prune -af
-           docker-compose up -d --build
+            cd ${{ secrets.WORK_DIR }}/client
+            docker-compose down
+            docker system prune -af
+            docker image prune -af
+          EOF
+
+      # Étape 7 : Reconstruire et redémarrer les conteneurs
+      - name: Build and Start Docker Containers
+        run: |
+          ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
+            cd ${{ secrets.WORK_DIR }}/client
+            docker-compose up -d --build
+          EOF
+
+      # Étape 8 : Restauration de la base de données
+      - name: Restore MySQL Database
+        run: |
+          ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
+            docker exec -i mon-mysql mysql -uuser -puserpassword mydatabase < ${{ secrets.WORK_DIR }}/backup/db_backup.sql
           EOF
