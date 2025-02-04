@@ -1,13 +1,13 @@
+version: '3'
+
 services:
   app:
-    build: .
-    ports:
-      - "3000:3000"
+    build:
+      context: .
+      dockerfile: Dockerfile # Utilisation d'un Dockerfile pour construire l'image
+    container_name: mon-app
     volumes:
-     - .:/app
-     - ./node_modules:/app/node_modules
-    environment:
-      NODE_ENV: development
-    stdin_open: true
-    tty: true
-    command: npm start
+      - ./src:/app/src # Synchronisation des fichiers locaux
+      - ./public:/src/public
+    ports:
+      - "3000:3000" # Expose le port 3000
