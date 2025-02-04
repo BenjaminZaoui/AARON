@@ -27,7 +27,7 @@ jobs:
       - name: Pull latest changes on the server
         run: |
           ssh raphyserver@3.89.252.255 <<EOF
-            cd /home/raphyserver/www/AARON
+            cd ${{ secrets.WORK_DIR }}
             git checkout main
             git pull
           EOF
@@ -35,7 +35,7 @@ jobs:
       - name: Build Docker image
         run: |
           ssh raphyserver@3.89.252.255 <<EOF
-           cd /home/raphyserver/www/AARON/client
+           cd ${{ secrets.WORK_DIR }}/client
            docker-compose -f docker-compose.yml
            docker system prune -af
            docker image prune -af
