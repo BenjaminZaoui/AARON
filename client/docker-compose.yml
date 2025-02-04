@@ -4,24 +4,30 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile # Utilisation d'un Dockerfile pour construire l'image
+      dockerfile: Dockerfile  # Utilisation d'un Dockerfile pour construire l'image
     container_name: mon-app
     volumes:
-      - ./src:/app/src # Synchronisation des fichiers locaux
-      - ./public:/src/public
+      - ./src:/app/src         # Synchronisation des fichiers locaux
+      - ./public:/app/public
     ports:
-      - "3000:3000" # Expose le port 3000
+      - "3000:3000"            # Expose le port 3000
+    depends_on:
+      - db                     # Attend que la BDD soit opérationnelle
+
   db:
-    image: mysql:8.0
+    image: mysql:8.0           # Utilisation de l'image officielle MySQL 8.0
     container_name: mon-mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydatabase
-      MYSQL_USER: user
-      MYSQL_PASSWORD: userpassword
+      MYSQL_ROOT_PASSWORD: rootpassword  # Mot de passe root (à personnaliser)
+      MYSQL_DATABASE: mydatabase         # Base de données à créer
+      MYSQL_USER: user                   # Nom d'utilisateur
+      MYSQL_PASSWORD: userpassword       # Mot de passe utilisateur
     ports:
-      - "3306:3306"
+      - "3306:3306"          # Expose le port MySQL
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/mysql  # Persistance des données
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Exécute init.sql au démarrage
+
+volumes:
+  db_data:  # ✅ Déclaration du volume persistant
