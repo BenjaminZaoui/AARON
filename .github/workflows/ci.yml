@@ -40,7 +40,7 @@ jobs:
           ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
             mkdir -p ${{ secrets.WORK_DIR }}/client/backup
             touch ${{ secrets.WORK_DIR }}/client/backup/db_backup.sql 
-            docker exec mon-mysql mysqldump -uuser -puserpassword mydatabase > ${{ secrets.WORK_DIR }} /client/backup/db_backup.sql
+            docker exec mon-mysql mysqldump -uuser -puserpassword mydatabase > ${{ secrets.WORK_DIR }}/client/backup/db_backup.sql
           EOF
 
       # Étape 5 : Exécuter le pull sur le serveur
