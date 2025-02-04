@@ -21,12 +21,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan 3.89.252.255 >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       # Étape 3 : Exécuter le pull sur Le serveurs
       - name: Pull latest changes on the server
         run: |
-          ssh raphyserver@3.89.252.255 <<EOF
+          ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
             cd ${{ secrets.WORK_DIR }}
             git checkout main
             git pull
@@ -34,7 +34,7 @@ jobs:
       # Étape 4 : Construire l'image Dockers
       - name: Build Docker image
         run: |
-          ssh raphyserver@3.89.252.255 <<EOF
+          ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
            cd ${{ secrets.WORK_DIR }}/client
            docker-compose -f docker-compose.yml
            docker system prune -af
