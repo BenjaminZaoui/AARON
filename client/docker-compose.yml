@@ -29,18 +29,5 @@ services:
       - db_data:/var/lib/mysql  # Persistance des données
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Exécute init.sql au démarrage
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: mon-phpmyadmin
-    restart: always
-    ports:
-      - "8080:80"            # Accéder à phpMyAdmin via le port 8080
-    environment:
-      PMA_HOST: db           # Le nom du service MySQL dans docker-compose
-      PMA_USER: user         # Utilisateur MySQL (doit correspondre à db)
-      PMA_PASSWORD: userpassword  # Mot de passe utilisateur MySQL
-    depends_on:
-      - db
-
 volumes:
   db_data:  # ✅ Déclaration du volume persistant
