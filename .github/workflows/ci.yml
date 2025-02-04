@@ -19,7 +19,7 @@ jobs:
 
       - name: Run tests
         run: |
-         apt get update
+         npm install
          cd client/
          npm test
 
