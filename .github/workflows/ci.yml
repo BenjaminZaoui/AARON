@@ -74,7 +74,5 @@ jobs:
       - name: Restore MySQL Database
         run: |
           ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
-            docker cp ${{ secrets.WORK_DIR }}/client/backup/db_backup.sql mon-mysql:/backup/db_backup.sql
-            docker exec -i mon-mysql mysql -uuser -puserpassword mydatabase < /backup/db_backup.sql
+            docker exec -i mon-mysql mysql -uuser -puserpassword mydatabase < ${{ secrets.WORK_DIR }}/backup/db_backup.sql
           EOF
-
