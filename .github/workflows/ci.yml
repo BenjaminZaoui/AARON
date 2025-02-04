@@ -15,7 +15,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Étape 2 : Configurer l'accès SSH
+      # Étape 2 : Configuration de Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # Étape 3 : Installer les dépendances
+      - name: Install dependencies
+        run: npm ci
+
+      # Étape 4 : Exécuter les tests
+      - name: Run tests
+        run: npm test
+
+      # Si l'étape précédente échoue, le workflow s'arrête ici.
+
+      # Étape 5 : Configurer l'accès SSH
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
@@ -23,7 +39,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      # Étape 3 : Exécuter le pull sur Le serveurs
+      # Étape 6 : Exécuter le pull sur le serveur
       - name: Pull latest changes on the server
         run: |
           ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
@@ -31,13 +47,13 @@ jobs:
             git checkout main
             git pull
           EOF
-      # Étape 4 : Construire l'image Dockers
-      - name: Build Docker image
+
+      # Étape 7 : Construire l'image Docker et déployer
+      - name: Build Docker image and deploy
         run: |
           ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
-           cd ${{ secrets.WORK_DIR }}/client
-           docker-compose -f docker-compose.yml
-           docker system prune -af
-           docker image prune -af
-           docker-compose up -d --build
+            cd ${{ secrets.WORK_DIR }}/client
+            docker-compose -f docker-compose.yml up -d --build
+            docker system prune -af
+            docker image prune -af
           EOF
