@@ -27,7 +27,7 @@ jobs:
             cd /home/raphaelserv/mon-app
 
             # Mettre à jour le code depuis le dépôt Git
-            git pull origin master
+            git pull origin main
 
             # Arrêter et supprimer le conteneur existant
             docker-compose down
