@@ -69,10 +69,3 @@ jobs:
             cd ${{ secrets.WORK_DIR }}/client
             docker-compose up -d --build
           EOF
-
-      # Étape 8 : Restauration de la base de données
-      - name: Restore MySQL Database
-        run: |
-          ssh raphyserver@${{ secrets.SSH_HOST }} <<EOF
-            docker exec -i mon-mysql mysql -uuser -puserpassword mydatabase < ${{ secrets.WORK_DIR }}/client/backup/db_backup.sql
-          EOF
